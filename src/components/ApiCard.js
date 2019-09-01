@@ -13,7 +13,8 @@ class ApiCard extends Component {
     };
     onClick = (name) => {
         this.props.history.push(`/api/${name}`)
-    }
+    };
+    
     render() {
         const {name, icon, desc,} = this.props
         return (
@@ -26,7 +27,7 @@ class ApiCard extends Component {
                     </CardBody>
                 </Card>
             </div>)
-    }
+    };
 }
 
 export default withRouter(ApiCard)

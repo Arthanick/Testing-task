@@ -1,27 +1,27 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import { connect } from 'react-redux';
+import { Button, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { newUser } from '../redux/actions/users';
 import NavBar from '../components/NavBar'
+import UserForm from '../userForm'
+import { connect } from 'react-redux';
+import { newUser, editUser } from '../redux/actions/users';
 
 class SettingsPage extends Component {
     static propTypes = {
-        dispatch: PropTypes.func
+        dispatch: PropTypes.func,
+        users: PropTypes.arrayOf(PropTypes.object),
+        currentUser: PropTypes.number,
     };
 
     static defaultProps = {
-        dispatch: () => { }
+        dispatch: () => { },
+        users: [],
+        currentUser: null,
     };
 
     state = {
         modal: false,
-        user: {
-            name: "",
-            secondName: "",
-            birthDate: "",
-            about: "",
-        },
+        isEdit: false,
     }
 
     toggle = () => {
@@ -32,53 +32,24 @@ class SettingsPage extends Component {
                 secondName: "",
                 birthDate: "",
                 about: "",
-            }
+            },
+            isEdit: false,
         }));
     }
 
-    onSave = () => {
-        this.props.dispatch(newUser(this.state.user));
+    onSave = (user) => {
+        this.props.dispatch(newUser(user));
         this.toggle()
     }
 
-    onChangeName = (event) => {
-        event.preventDefault();
-        this.setState({
-            user: {
-                ...this.state.user,
-                name: event.target.value
-            },
-        });
+    onEdit = (user, id) => {
+        this.props.dispatch(editUser({...user, id}));
+        this.toggle()
     }
 
-    onChangeSecondName = (event) => {
-        event.preventDefault();
-        this.setState({
-            user: {
-                ...this.state.user,
-                secondName: event.target.value
-            },
-        });
-    }
-
-    onChangeDate = (event) => {
-        event.preventDefault();
-        this.setState({
-            user: {
-                ...this.state.user,
-                birthDate: event.target.value
-            },
-        });
-    }
-
-    onChangeAbout = (event) => {
-        event.preventDefault();
-        this.setState({
-            user: {
-                ...this.state.user,
-                about: event.target.value
-            },
-        });
+    onModalEdit = () => {
+        this.toggle()
+        this.setState({isEdit:true})
     }
 
     render() {
@@ -86,38 +57,34 @@ class SettingsPage extends Component {
             <div>
                 <NavBar />
                 <div className="App-header">
-                    <Button color="danger" onClick={this.toggle}>{this.props.buttonLabel} Add User</Button>
-                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                        <ModalHeader toggle={this.toggle}>New User</ModalHeader>
-                        <ModalBody>
-                            <Form>
-                                <FormGroup>
-                                    <Label for="exampleEmail">Name</Label>
-                                    <Input name="name" id="exampleEmail" placeholder="Enter your name" onChange={this.onChangeName} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="examplePassword">Second Name</Label>
-                                    <Input name="secondName" id="examplePassword" placeholder="Enter your second name" onChange={this.onChangeSecondName} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="exampleDate">Add Birth Date</Label>
-                                    <Input type="date" name="date" id="exampleDate" onChange={this.onChangeDate} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="exampleAbout">About</Label>
-                                    <Input type="textarea" name="about" id="exampleAbout" placeholder="Enter something about you" onChange={this.onChangeAbout} />
-                                </FormGroup>
-                            </Form>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.onSave}>Add</Button>{' '}
-                            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                        </ModalFooter>
-                    </Modal>
+                    <Row>
+                        <Col xs="4">
+                            <Button color="primary" onClick={this.toggle}> Add User</Button>
+                        </Col>
+                        <Col xs="4">
+                            <Button color="danger" onClick={this.onModalEdit} disabled={!this.props.currentUser}> Edit User</Button>
+                        </Col>
+                    </Row>
+                    <UserForm 
+                        modal={this.state.modal} 
+                        onSave={this.onSave} 
+                        toggle={this.toggle} 
+                        user={this.props.users[this.props.currentUser - 1]} 
+                        isEdit={this.state.isEdit} 
+                        onEdit={this.onEdit}
+                        />
                 </div>
             </div>
         );
     }
 }
 
-export default connect()(SettingsPage)
+function mapStateToProps(state) {
+    const { users } = state.pages;
+    return {
+        users: users.users,
+        currentUser: users.currentUser
+    }
+}
+
+export default connect(mapStateToProps)(SettingsPage)

@@ -1,15 +1,22 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Form, FormGroup, Label, Input, Container, Row, Col, Button} from 'reactstrap';
 
 export default class LoginPage extends Component {
+    
+    static propTypes = {
+        history: PropTypes.object.isRequired
+    };
+
     state = {
         login: "", 
         password: "",
-    }
+    };
 
     onClick = () => {
         localStorage.setItem("Token", this.state.password + this.state.login)
-    }
+        this.props.history.push(`/settings`)
+    };
 
     onChangeLogin = (event) => {
         event.preventDefault();
@@ -17,7 +24,7 @@ export default class LoginPage extends Component {
         this.setState({
             login: value,
         });
-    }
+    };
     
     onChangePass = (event) => {
         event.preventDefault();
@@ -25,7 +32,7 @@ export default class LoginPage extends Component {
         this.setState({
             password: value,
         });
-    }
+    };
     render(){
         return (
             <Container className="App-header">

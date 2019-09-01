@@ -12,12 +12,12 @@ export default class Dashboard extends Component {
                 <NavBar />
                 <Container className="App-header">
                     <Row>
-                        <Col xs="6"><ApiCard {...apis[0]} /></Col>
-                        <Col xs="6"><ApiCard {...apis[1]} /></Col>
+                        <Col xs="12" md="6" lg="6"><ApiCard {...apis[0]} /></Col>
+                        <Col xs="12" md="6" lg="6"><ApiCard {...apis[1]} /></Col>
                     </Row>
                     <Row>
-                        <Col xs="6"><ApiCard {...apis[2]} /></Col>
-                        <Col xs="6"><ApiCard {...apis[3]} /></Col>
+                        <Col xs="12" md="6" lg="6"><ApiCard {...apis[2]} /></Col>
+                        <Col xs="12" md="6" lg="6"><ApiCard {...apis[3]} /></Col>
                     </Row>
                 </Container>
             </div>
