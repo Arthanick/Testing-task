@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import LoginPage from './pages/LoginPage';
 import DashBoard from './pages/DashBoard';
 import SettingsPage from './pages/SettingsPage';
+import InfoApiPage from './pages/InfoApiPage';
 
 function check_token() {
     if (localStorage.getItem("Token")) {
@@ -33,5 +34,10 @@ export default [
         path: "/dashboards",
         component: DashBoard,
     },
+
+    {
+        path: "/api/:name",
+        component: InfoApiPage,
+    }
 
 ];

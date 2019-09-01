@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getCurrentUser } from '../redux/actions/users';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 class NavBar extends Component {
     static propTypes = {
@@ -30,22 +30,28 @@ class NavBar extends Component {
         this.props.dispatch(getCurrentUser(id));
     }
     render() {
-        const { users } = this.props;
-        console.log(users)
+        const { users, currentUser } = this.props;
+        console.log(users[currentUser - 1], currentUser)
         return (
             <div>
                 <Navbar color="light" light expand="md">
-                    <NavbarBrand >Dashboard Test</NavbarBrand>
+                    <NavbarBrand >{(currentUser && users[currentUser - 1].name) || ""}</NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/dashboards/">To dashboards</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/settings/">To settings</NavLink>
+                            </NavItem>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     Users
                                 </DropdownToggle>
                                 <DropdownMenu right>
                                     {users && users.map(user => (
-                                        <DropdownItem key={user.id} onClick = {() => this.onClick(user.id)}>
+                                        <DropdownItem key={user.id} onClick={() => this.onClick(user.id)}>
                                             {`${user.name} ${user.secondName}`}
                                         </DropdownItem>))
                                     }
@@ -60,9 +66,10 @@ class NavBar extends Component {
 }
 
 function mapStateToProps(state) {
-    const {users} = state.pages; 
-    return { 
+    const { users } = state.pages;
+    return {
         users: users.users,
-        currenUser: users.currenUser}
+        currentUser: users.currentUser
+    }
 }
 export default connect(mapStateToProps)(NavBar)

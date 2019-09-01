@@ -1,21 +1,23 @@
-import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
-import {createLogger} from 'redux-logger';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import createStorageMiddleware, { getStorageState } from 'redux-simple-storage-middleware';
 import reducer from './reducer';
 
-export default function (initial, {log = false} = {}) {
-  const middlewares = [];
-  if (log) {
-    const logger = createLogger();
-    middlewares.push(logger);
-  }
+export default function (initial, { log = false } = {}) {
+  const localStorageMiddleware = createStorageMiddleware({
+    key: 'userStorage',
+  });
+
+  const storageState = getStorageState({
+    key: 'userStorage',
+  });
 
   const store = createStore(
     combineReducers({
       pages: reducer,
     }),
-    initial,
+    storageState,
     compose(
-      applyMiddleware(...middlewares),
+      applyMiddleware(localStorageMiddleware),
     ),
   );
 
