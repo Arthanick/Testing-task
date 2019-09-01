@@ -28,7 +28,7 @@ export default class LoginPage extends Component {
     }
     render(){
         return (
-            <Container>
+            <Container className="App-header">
                 <Row>
                     <Col sm-offset="4">
                         <Form>
